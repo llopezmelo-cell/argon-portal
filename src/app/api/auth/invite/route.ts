@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
   const loginUrl = `${appUrl}/login`
 
   await resend.emails.send({
-    from: 'ARGon Broker <noreply@argonbroker.com.ar>',
+    from: 'ARGon Broker <noreply@argon.com.ar>',
     to: normalizedEmail,
     subject: 'Tu acceso a ARGon Broker',
     html: `
