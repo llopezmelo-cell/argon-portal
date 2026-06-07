@@ -84,7 +84,7 @@ export default function LoginPage() {
       const data = await res.json()
       if (!res.ok) { setError(data.error); return }
 
-      await supabase.auth.setSession({ access_token: data.access, refresh_token: data.refresh })
+      await supabase.auth.verifyOtp({ token_hash: data.token_hash, type: 'magiclink' })
       router.replace('/dashboard')
     } catch {
       setError('Biometría fallida. Usá tu PIN.')
@@ -137,7 +137,7 @@ export default function LoginPage() {
         }
         return
       }
-      await supabase.auth.setSession({ access_token: data.access, refresh_token: data.refresh })
+      await supabase.auth.verifyOtp({ token_hash: data.token_hash, type: 'magiclink' })
       router.replace('/dashboard')
     } catch {
       setError('Error de conexión.')
@@ -161,7 +161,7 @@ export default function LoginPage() {
       })
       const data = await res.json()
       if (!res.ok) { setError(data.error); return }
-      await supabase.auth.setSession({ access_token: data.access, refresh_token: data.refresh })
+      await supabase.auth.verifyOtp({ token_hash: data.token_hash, type: 'magiclink' })
       router.replace('/dashboard')
     } catch {
       setError('Error al configurar PIN.')

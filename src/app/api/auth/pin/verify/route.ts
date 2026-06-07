@@ -91,8 +91,7 @@ export async function POST(req: NextRequest) {
   const props = authData?.properties as Record<string, string> | undefined
 
   return NextResponse.json({
-    access: props?.['access_token'],
-    refresh: props?.['refresh_token'],
+    token_hash: props?.['hashed_token'],
     user: { id: user.id, role: user.role },
   })
 }
