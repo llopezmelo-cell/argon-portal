@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createClient } from '@supabase/supabase-js'
 import { hashPin, isValidPin } from '@/lib/auth/pin'
 import { logAudit } from '@/lib/auth/audit'
 
@@ -8,7 +8,10 @@ export async function POST(req: NextRequest) {
   if (!email || !pin) return NextResponse.json({ error: 'Datos incompletos' }, { status: 400 })
   if (!isValidPin(pin)) return NextResponse.json({ error: 'PIN debe tener 6 dígitos' }, { status: 400 })
 
-  const supabase = await createClient()
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
   const ip = req.headers.get('x-forwarded-for') ?? 'unknown'
 
   const { data: user } = await supabase
@@ -26,7 +29,7 @@ export async function POST(req: NextRequest) {
     last_login_at: new Date().toISOString(),
   }).eq('id', user.id)
 
-  // Crear sesión
+  // Crear sesión con magic link
   const { data: authData } = await supabase.auth.admin.generateLink({
     type: 'magiclink',
     email: email.toLowerCase().trim(),

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createClient } from '@supabase/supabase-js'
 import { hashPin } from '@/lib/auth/pin'
 import { rateLimit } from '@/lib/auth/rate-limit'
 import { logAudit } from '@/lib/auth/audit'
@@ -17,7 +17,10 @@ export async function POST(req: NextRequest) {
   if (!email || !pin) return NextResponse.json({ error: 'Datos incompletos' }, { status: 400 })
   if (!/^\d{6}$/.test(pin)) return NextResponse.json({ error: 'PIN inválido' }, { status: 400 })
 
-  const supabase = await createClient()
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
 
   const { data: user } = await supabase
     .from('users')
