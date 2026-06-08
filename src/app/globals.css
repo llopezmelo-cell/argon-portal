@@ -4,20 +4,30 @@
    TOKENS DE DISEÑO — ARGon Broker
    ============================================================ */
 :root {
-  --primary:   #003D5C;
-  --accent:    #2BA8C4;
-  --alert:     #F2A900;
-  --danger:    #D63A2F;
-  --success:   #1F9F5C;
-  --bg:        #EFF3F8;
-  --surface:   #FFFFFF;
-  --text:      #0F172A;
-  --muted:     #64748B;
-  --border:    #E2E8F0;
+  --primary:        #003D5C;
+  --primary-ink:    #FFFFFF;
+  --accent:         #2BA8C4;
+  --accent-soft:    #E3F4F8;
+  --alert:          #F2A900;
+  --alert-soft:     #FEF4D9;
+  --danger:         #D63A2F;
+  --danger-soft:    #FBE5E2;
+  --success:        #1F9F5C;
+  --success-soft:   #E1F4E9;
+  --bg:             #EFF3F8;
+  --surface:        #FFFFFF;
+  --surface-2:      #F8FAFC;
+  --text:           #0F172A;
+  --text-2:         #334155;
+  --muted:          #64748B;
+  --border:         #E2E8F0;
+  --border-strong:  #CBD5E1;
 
   --shadow-sm: 0 1px 2px rgba(15,23,42,0.05);
   --shadow-md: 0 6px 18px rgba(15,23,42,0.07), 0 2px 4px rgba(15,23,42,0.04);
   --shadow-lg: 0 20px 40px rgba(15,23,42,0.10), 0 4px 12px rgba(15,23,42,0.06);
+
+  --r-sm: 10px; --r-md: 14px; --r-lg: 20px; --r-xl: 28px;
 
   --background: #EFF3F8;
   --foreground: #0F172A;
@@ -30,15 +40,139 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: -apple-system, 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
+
+/* ── Card ── */
+.card {
+  background: var(--surface);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ── Bottom Nav ── */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex; align-items: stretch;
+  height: 64px;
+  z-index: 40;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ── Badges ── */
+.badge { display: inline-flex; align-items: center; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 20px; }
+.badge-success { background: var(--success-soft); color: var(--success); }
+.badge-alert   { background: var(--alert-soft);   color: var(--alert); }
+.badge-danger  { background: var(--danger-soft);  color: var(--danger); }
+
+/* ── Chips ── */
+.chip {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 8px;
+}
+.chip.ok    { background: var(--success-soft); color: var(--success); }
+.chip.warn  { background: var(--alert-soft);   color: var(--alert); }
+.chip.muted { background: var(--surface-2);    color: var(--muted); border: 1px solid var(--border); }
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer;
+  border-radius: 12px; padding: 11px 16px; transition: all .12s ease;
+}
+.btn-primary { background: var(--primary); color: var(--primary-ink); border: none; }
+.btn-ghost { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+.btn-block { width: 100%; }
+
+/* ── Section header ── */
+.sec-h { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px 10px; }
+.sec-h .ttl { font-size: 15px; font-weight: 700; color: var(--text); }
+.sec-h .action { font-size: 13px; font-weight: 600; color: var(--accent); cursor: pointer; }
+
+/* ── KV rows ── */
+.kv-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px; gap: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.kv-row:last-child { border-bottom: none; }
+.kv-row .k { font-size: 13px; color: var(--muted); }
+.kv-row .v { font-size: 13px; font-weight: 600; color: var(--text); text-align: right; }
+
+/* ── Sync pill ── */
+.sync-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11.5px; font-weight: 500; color: var(--success);
+  background: var(--success-soft); border-radius: 20px; padding: 4px 10px;
+}
+.sync-pill.offline { color: var(--muted); background: var(--surface-2); }
+.sync-pill .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: currentColor; flex-shrink: 0;
+}
+
+/* ── Emergency screen ── */
+.emg { display: flex; flex-direction: column; gap: 12px; padding: 16px 16px 100px; }
+.emg-h { font-size: 28px; font-weight: 800; color: var(--text); letter-spacing: -0.02em; }
+.emg-sub { font-size: 13.5px; color: var(--muted); margin-top: 4px; }
+.emg-big {
+  background: var(--danger); color: white; border-radius: 18px;
+  padding: 18px 16px; display: flex; align-items: center; gap: 14px;
+  cursor: pointer; box-shadow: var(--shadow-md);
+}
+.emg-big .ico { width: 46px; height: 46px; border-radius: 14px; background: rgba(255,255,255,0.18); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.emg-big .text { flex: 1; }
+.emg-big .t1 { font-size: 17px; font-weight: 800; letter-spacing: -0.01em; }
+.emg-big .t2 { font-size: 12px; opacity: 0.85; margin-top: 2px; }
+.emg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+/* ── Todo steps ── */
+.todo-step {
+  display: flex; align-items: flex-start; gap: 14px; padding: 14px 16px;
+  border-bottom: 1px solid var(--border); cursor: pointer; transition: background .1s;
+}
+.todo-step:last-child { border-bottom: none; }
+.todo-step .num {
+  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+  border: 2px solid var(--border-strong); display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: var(--muted); margin-top: 1px;
+}
+.todo-step.done .num { background: var(--success); border-color: var(--success); color: white; }
+.todo-step .body .t1 { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.3; }
+.todo-step.done .body .t1 { color: var(--muted); text-decoration: line-through; }
+.todo-step .body .t2 { font-size: 12px; color: var(--muted); margin-top: 4px; line-height: 1.4; }
+
+/* ── Rubros grid ── */
+.rubros-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 16px;
+}
+.rubro-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 18px;
+  padding: 14px; cursor: pointer; box-shadow: var(--shadow-sm);
+  display: flex; flex-direction: column; gap: 6px; min-height: 130px;
+}
+.rubro-card .icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+.rubro-card .count { font-size: 24px; font-weight: 800; color: var(--text); letter-spacing: -0.02em; line-height: 1; }
+.rubro-card .label { font-size: 12.5px; font-weight: 600; color: var(--text); }
+.rubro-card .next { font-size: 10.5px; font-weight: 600; display: flex; align-items: center; gap: 3px; }
+.rubro-card .next.due { color: var(--alert); }
+.rubro-card .next.ok  { color: var(--success); }
+
+/* ── Alert strip ── */
+.alert-strip {
+  margin: 0 16px; padding: 13px 14px; border-radius: 14px;
+  background: var(--alert-soft); border: 1px solid var(--alert);
+  display: flex; align-items: center; gap: 12px; cursor: pointer;
+}
+.alert-strip .ico { width: 32px; height: 32px; border-radius: 9px; background: var(--alert); color: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.alert-strip .body { flex: 1; min-width: 0; }
+.alert-strip .t1 { font-size: 13.5px; font-weight: 700; color: var(--text); }
+.alert-strip .t2 { font-size: 11.5px; color: var(--muted); margin-top: 1px; }
+.alert-strip .cta { font-size: 12px; font-weight: 700; color: var(--accent); flex-shrink: 0; }
