@@ -74,11 +74,20 @@ export async function POST(req: NextRequest) {
     last_login_at: new Date().toISOString(),
   }).eq('id', user.id)
 
+  // Asegurar que el rol esté en user_metadata
+  await supabase.auth.admin.updateUserById(user.id, {
+    user_metadata: { role: user.role },
+  })
+
   // Crear sesión Supabase vía magic link
-  const { data: authData } = await supabase.auth.admin.generateLink({
+  const { data: authData, error: linkError } = await supabase.auth.admin.generateLink({
     type: 'magiclink',
     email: email.toLowerCase().trim(),
   })
+
+  if (linkError) {
+    return NextResponse.json({ error: 'Error al crear sesión' }, { status: 500 })
+  }
 
   await logAudit(supabase, {
     user_id: user.id,
@@ -87,11 +96,15 @@ export async function POST(req: NextRequest) {
     metadata: { method: 'pin' },
   })
 
-  // Las propiedades del link incluyen los tokens
   const props = authData?.properties as Record<string, string> | undefined
+  const token_hash = props?.hashed_token
+
+  if (!token_hash) {
+    return NextResponse.json({ error: 'No se pudo generar el token de sesión' }, { status: 500 })
+  }
 
   return NextResponse.json({
-    token_hash: props?.['hashed_token'],
+    token_hash,
     user: { id: user.id, role: user.role },
   })
 }

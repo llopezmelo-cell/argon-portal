@@ -180,21 +180,32 @@ export default function AseguradoHome() {
                       <p className="text-xs" style={{ color: 'var(--muted)' }}>{doc.period}</p>
                     </div>
                     <div className="flex gap-2 flex-shrink-0">
-                      <a
-                        href={doc.file_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <button
+                        onClick={async () => {
+                          // file_url puede ser ruta de storage o URL directa
+                          let url = doc.file_url
+                          if (!url.startsWith('http')) {
+                            const { data } = await supabase.storage.from('documents').createSignedUrl(url, 3600)
+                            url = data?.signedUrl || url
+                          }
+                          window.open(url, '_blank')
+                        }}
                         className="px-3 py-1.5 rounded-lg text-xs font-semibold text-white"
                         style={{ background: 'var(--primary)' }}
                       >
                         Ver
-                      </a>
+                      </button>
                       <button
-                        onClick={() => {
+                        onClick={async () => {
+                          let url = doc.file_url
+                          if (!url.startsWith('http')) {
+                            const { data } = await supabase.storage.from('documents').createSignedUrl(url, 3600)
+                            url = data?.signedUrl || url
+                          }
                           if (navigator.share) {
-                            navigator.share({ title: doc.display_name, url: doc.file_url })
+                            navigator.share({ title: doc.display_name, url })
                           } else {
-                            navigator.clipboard.writeText(doc.file_url)
+                            navigator.clipboard.writeText(url)
                           }
                         }}
                         className="px-3 py-1.5 rounded-lg text-xs font-semibold"

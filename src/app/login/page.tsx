@@ -25,9 +25,9 @@ export default function LoginPage() {
 
   useEffect(() => {
     isBiometricAvailable().then(setBioAvailable)
-    // Verificar si ya hay sesión activa
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) router.replace('/dashboard')
+    // Verificar si ya hay sesión activa y válida
+    supabase.auth.getUser().then(({ data, error }) => {
+      if (data.user && !error) router.replace('/dashboard')
     })
   }, [])
 

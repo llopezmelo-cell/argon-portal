@@ -16,19 +16,29 @@ export default function DashboardPage() {
       const { data: { user: authUser } } = await supabase.auth.getUser()
       if (!authUser) { router.replace('/login'); return }
 
+      // Intentar leer rol desde user_metadata (rápido, sin DB)
+      const metaRole = authUser.user_metadata?.role as string | undefined
+
+      // Fallback: consultar tabla users
       const { data } = await supabase
         .from('users')
         .select('*')
         .eq('id', authUser.id)
         .single()
 
+      const role = data?.role ?? metaRole
+
       setUser(data)
       setLoading(false)
 
       // Redirigir según rol
-      if (data?.role === 'admin') router.replace('/admin')
-      else if (data?.role === 'agente' || data?.role === 'coordinador') router.replace('/agente')
-      else if (data?.role === 'asegurado') router.replace('/asegurado')
+      if (role === 'admin') { router.replace('/admin'); return }
+      if (role === 'agente' || role === 'coordinador') { router.replace('/agente'); return }
+      if (role === 'asegurado') { router.replace('/asegurado'); return }
+
+      // Sin rol válido: cerrar sesión para romper el loop y volver al login limpio
+      await supabase.auth.signOut()
+      router.replace('/login')
     }
     load()
   }, [])
